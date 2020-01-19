@@ -35,6 +35,7 @@ public class RedPacketService extends AccessibilityService {
      * 红包页面Activity类名
      */
     private static final String RedEnvelope = "com.tencent.wework.enterprise.redenvelopes.controller.RedEnvelopeCollectorActivity";
+    private static final String RedEnvelope2 = "com.tencent.wework.enterprise.redenvelopes.controller.RedEnvelopeCollectorWithCoverActivity";
     /**
      * 红包详情页面Activity类名
      */
@@ -67,7 +68,7 @@ public class RedPacketService extends AccessibilityService {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 String activityName = event.getClassName().toString();
                 currentActivity = activityName;
-                if (RedEnvelope.equals(currentActivity)) {
+                if (RedEnvelope.equals(currentActivity) || RedEnvelope2.equals(currentActivity)) {
                     openPacket(); // 开红包
                 }
                 LogUtil.d( "activityName:" + activityName);
@@ -81,7 +82,7 @@ public class RedPacketService extends AccessibilityService {
                     if(getBooleanSetting("pref_auto_click_msg", true)) {
                         queryPacket();
                     }
-                } else if (RedEnvelope.equals(currentActivity)) {
+                } else if (RedEnvelope.equals(currentActivity) || RedEnvelope2.equals(currentActivity)) {
                     openPacket(); // 开红包
 
                 } else if (RedEnvelopeDetail.equals(currentActivity)) {
@@ -244,6 +245,12 @@ public class RedPacketService extends AccessibilityService {
         AccessibilityNodeInfo node = getLastRedpackageNode(rootNode, searchText);
         if(null != node){
             CharSequence text = node.getText();
+            if(!TextUtils.isEmpty(text)){
+                if((text+"").contains(getString(R.string.has_get_packet))){
+                    return;
+                }
+            }
+
             LogUtil.d("最新的红包text:"+text);
             LogUtil.d( "最新的红包=" + node);
             if (node != null) {
