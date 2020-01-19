@@ -226,6 +226,8 @@ public class RedPacketService extends AccessibilityService {
             return "com.tencent.wework:id/cwf";
         } else if("2.7.2".equals(weworkVersion)) {
             return "com.tencent.wework:id/d94";
+        } else if("3.0.2".equals(weworkVersion)){
+            return "com.tencent.wework:id/dvu";
         }
         return null;
     }
@@ -240,20 +242,27 @@ public class RedPacketService extends AccessibilityService {
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
         String searchText = getResources().getString(R.string.open_red_packet); // 领取红包
         AccessibilityNodeInfo node = getLastRedpackageNode(rootNode, searchText);
-        LogUtil.d( "最新的红包=" + node);
-        if (node != null) {
-            node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-            AccessibilityNodeInfo parent = null;
-            while ((parent = node.getParent()) != null) {
-                LogUtil.d( "parentNode=" + parent);
-                if (parent.isClickable()) {
-                    parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    break;
+        if(null != node){
+            CharSequence text = node.getText();
+            LogUtil.d("最新的红包text:"+text);
+            LogUtil.d( "最新的红包=" + node);
+            if (node != null) {
+                node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                AccessibilityNodeInfo parent = null;
+                while ((parent = node.getParent()) != null) {
+                    LogUtil.d( "parentNode=" + parent);
+                    if (parent.isClickable()) {
+                        parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        break;
+                    }
                 }
             }
         }
+
     }
 
+//    private final LimitQueue<String> queue = new LimitQueue(20);
+//    private final Map<String, Integer> map = new HashMap<>();
     /**
      * 查找包含指定字符串的在屏幕最下面的一个节点
      * @param rootNode
